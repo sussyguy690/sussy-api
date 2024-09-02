@@ -28,7 +28,7 @@ def oppai():
         return Response(image, mimetype="image/png")
     else:
         return jsonify({"API", "Responded with error"})
-    
+
 
 @app.route("/image/milf", methods=["GET"])
 def milf():
@@ -42,7 +42,8 @@ def milf():
         return Response(image, mimetype="image/png")
     else:
         return jsonify({"API", "Responded with error"})
-    
+
+
 @app.route("/image/ecchi", methods=["GET"])
 def ecchi():
     url = WAIFUIM + "&included_tags=ecchi" + constant
@@ -55,7 +56,8 @@ def ecchi():
         return Response(image, mimetype="image/png")
     else:
         return jsonify({"API", "Responded with error"})
-    
+
+
 @app.route("/image/hentai", methods=["GET"])
 def hentai():
     url = WAIFUIM + "&included_tags=hentai" + constant
@@ -68,7 +70,8 @@ def hentai():
         return Response(image, mimetype="image/png")
     else:
         return jsonify({"API", "Responded with error"})
-    
+
+
 @app.route("/image/waifu", methods=["GET"])
 def waifu():
     url = WAIFUIM + "&included_tags=waifu&is_nsfw=false"
@@ -81,7 +84,8 @@ def waifu():
         return Response(image, mimetype="image/png")
     else:
         return jsonify({"API", "Responded with error"})
-    
+
+
 @app.route("/image/uniform", methods=["GET"])
 def uniform():
     url = WAIFUIM + "&included_tags=uniform&is_nsfw=false"
@@ -89,6 +93,37 @@ def uniform():
     if res.status_code == 200:
         data = res.json()
         imageUrl = data["images"][0]["url"]
+        imageData = requests.get(imageUrl)
+        image = BytesIO(imageData.content)
+        return Response(image, mimetype="image/png")
+    else:
+        return jsonify({"API", "Responded with error"})
+
+
+@app.route("/image/ass", methods=["GET"])
+def ass():
+    url = WAIFUIM + "&included_tags=ass&is_nsfw=false"
+    res = requests.get(url)
+    if res.status_code == 200:
+        data = res.json()
+        imageUrl = data["images"][0]["url"]
+        imageData = requests.get(imageUrl)
+        image = BytesIO(imageData.content)
+        return Response(image, mimetype="image/png")
+    else:
+        return jsonify({"API", "Responded with error"})
+
+
+@app.route("/image/gif", methods=["GET"])
+def gif():
+    url = "https://api.lunardev.group/nsfw/gif"
+    headers = {
+        "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDVmN2IzYWExYTNkYjZkYWU1OTY0YyIsImlhdCI6MTcyNTI5ODYxMSwiZXhwIjoxNzU2ODM0NjExfQ.KkQl7GKIzog-LaFP2ohRlAdBNbKofWy9xGrcxed-Mxs"
+    }
+    res = requests.get(url, headers=headers)
+    if res.status_code == 200:
+        data = res.json()
+        imageUrl = data["url"]
         imageData = requests.get(imageUrl)
         image = BytesIO(imageData.content)
         return Response(image, mimetype="image/png")
