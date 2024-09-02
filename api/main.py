@@ -16,6 +16,11 @@ WAIFUIM = "https://api.waifu.im/search/?excluded_files=3867126be8e260b5&excluded
 constant = "&is_nsfw=true"
 
 
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
 @app.route("/image/oppai", methods=["GET"])
 def oppai():
     url = WAIFUIM + "&included_tags=oppai" + constant
