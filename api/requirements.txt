@@ -13,4 +13,3 @@ requests==2.32.3
 urllib3==2.2.2
 Werkzeug==3.0.4
 pymongo==4.9.1
-bson==0.5.10
