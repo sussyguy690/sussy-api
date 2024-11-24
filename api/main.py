@@ -7,7 +7,7 @@ from flask import (
     request,
     redirect,
 )
-from bson import ObjectId
+# from bson import ObjectId
 from io import BytesIO
 import requests
 from datetime import datetime
@@ -23,12 +23,12 @@ client = MongoClient("mongodb+srv://shreyash:Galaxy.g05@databasefarmer11.ivwnoas
 db = client['test']  # Replace with your actual database name
 notes_collection = db.notes
 
-def is_valid_objectid(oid):
-    try:
-        ObjectId(oid)
-        return True
-    except:
-        return False
+# def is_valid_objectid(oid):
+#     try:
+#         ObjectId(oid)
+#         return True
+#     except:
+#         return False
 
 @app.route("/")
 def index():
@@ -83,11 +83,11 @@ def add_note():
     
 @app.route('/deleteNote/<note_id>', methods=['DELETE'])
 def delete_note(note_id):
-    if not is_valid_objectid(note_id):
-        return jsonify({"message": "Invalid note ID"}), 400
+    # if not is_valid_objectid(note_id):
+    #     return jsonify({"message": "Invalid note ID"}), 400
 
     try:
-        result = notes_collection.delete_one({"_id": ObjectId(note_id)})
+        result = notes_collection.delete_one({"_id": note_id})
         if result.deleted_count == 0:
             return jsonify({"message": "Note not found"}), 404
         return jsonify({"message": "Note deleted successfully"}), 200
