@@ -15,6 +15,7 @@ import pyfiglet
 from pymongo import MongoClient
 from werkzeug.exceptions import HTTPException
 from flask_cors import CORS, cross_origin
+from bson import ObjectId
 
 app = Flask(__name__)
 CORS(app)
@@ -90,7 +91,7 @@ def delete_note(note_id):
     #     return jsonify({"message": "Invalid note ID"}), 400
 
     try:
-        result = notes_collection.delete_one({"_id": note_id})
+        result = notes_collection.delete_one({"_id": ObjectId(note_id)})
         if result.deleted_count == 0:
             return jsonify({"message": "Note not found"}), 404
         return jsonify({"message": "Note deleted successfully"}), 200
