@@ -14,8 +14,10 @@ from datetime import datetime
 import pyfiglet
 from pymongo import MongoClient
 from werkzeug.exceptions import HTTPException
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+CORS(app)
 
 WAIFUIM = "https://api.waifu.im/search/?excluded_files=3867126be8e260b5&excluded_files=3133&gif=false&excluded_tags=maid"
 constant = "&is_nsfw=true"
@@ -82,6 +84,7 @@ def add_note():
         return jsonify({"message": "Failed to add note", "error": str(e)}), 500
     
 @app.route('/deleteNote/<note_id>', methods=['DELETE'])
+@cross_origin(origin='*',headers=['Content-Type','Authorization'])
 def delete_note(note_id):
     # if not is_valid_objectid(note_id):
     #     return jsonify({"message": "Invalid note ID"}), 400
