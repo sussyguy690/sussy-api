@@ -84,7 +84,7 @@ def add_note():
         return jsonify({"message": "Failed to add note", "error": str(e)}), 500
     
 @app.route('/deleteNote/<note_id>', methods=['DELETE'])
-@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+@cross_origin(origin='*')
 def delete_note(note_id):
     # if not is_valid_objectid(note_id):
     #     return jsonify({"message": "Invalid note ID"}), 400
