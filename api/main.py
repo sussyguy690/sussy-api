@@ -22,7 +22,7 @@ CORS(app)
 
 WAIFUIM = "https://api.waifu.im/search/?excluded_files=3867126be8e260b5&excluded_files=3133&gif=false&excluded_tags=maid"
 constant = "&is_nsfw=true"
-client = MongoClient("mongodb+srv://shreyash:Galaxy.g05@databasefarmer11.ivwnoas.mongodb.net/?retryWrites=true&w=majority&appName=DatabaseFarmer11")
+client = MongoClient("lul")
 db = client['test']  # Replace with your actual database name
 notes_collection = db.notes
 
