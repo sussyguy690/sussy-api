@@ -7,9 +7,11 @@ from flask import (
     request,
     redirect,
 )
+
 # from bson import ObjectId
 from io import BytesIO
 import requests
+import random
 from datetime import datetime
 import pyfiglet
 from pymongo import MongoClient
@@ -23,8 +25,13 @@ CORS(app)
 WAIFUIM = "https://api.waifu.im/search/?excluded_files=3867126be8e260b5&excluded_files=3133&gif=false&excluded_tags=maid"
 constant = "&is_nsfw=true"
 client = MongoClient("lul")
-db = client['test']  # Replace with your actual database name
+db = client["test"]  # Replace with your actual database name
 notes_collection = db.notes
+
+
+def generate_random_number(min_val, max_val):
+    return random.randint(min_val, max_val)
+
 
 # def is_valid_objectid(oid):
 #     try:
@@ -33,16 +40,18 @@ notes_collection = db.notes
 #     except:
 #         return False
 
+
 @app.route("/")
 def index():
     return render_template("index.html")
 
-@app.route('/notes', methods=['GET'])
+
+@app.route("/notes", methods=["GET"])
 def get_notes():
     try:
         # Fetch all notes from the MongoDB collection
         notes = list(notes_collection.find())
-        
+
         # Manually format the response
         formatted_notes = []
         for note in notes:
@@ -50,32 +59,37 @@ def get_notes():
                 "_id": str(note["_id"]),  # Convert ObjectId to string
                 "title": note["title"],
                 "content": note["content"],
-                "createdAt": note.get("createdAt", datetime.utcnow()),  # Default to current UTC time if missing
-                "updatedAt": note.get("updatedAt", datetime.utcnow()),  # Default to current UTC time if missing
-                "__v": 0  # Adding version field as __v (set to 0 by default)
+                "createdAt": note.get(
+                    "createdAt", datetime.utcnow()
+                ),  # Default to current UTC time if missing
+                "updatedAt": note.get(
+                    "updatedAt", datetime.utcnow()
+                ),  # Default to current UTC time if missing
+                "__v": 0,  # Adding version field as __v (set to 0 by default)
             }
             formatted_notes.append(formatted_note)
-        
+
         return jsonify(formatted_notes)
-    
+
     except Exception as e:
         return jsonify({"message": "Failed to fetch notes", "error": str(e)}), 500
 
-@app.route('/addNote', methods=['POST'])
+
+@app.route("/addNote", methods=["POST"])
 def add_note():
     try:
         data = request.get_json()
-        title = data.get('title')
-        content = data.get('content')
+        title = data.get("title")
+        content = data.get("content")
 
         if not title or not content:
             return jsonify({"message": "Title and content are required."}), 400
-        
+
         new_note = {
             "title": title,
             "content": content,
             "createdAt": datetime.utcnow(),
-            "updatedAt": datetime.utcnow()
+            "updatedAt": datetime.utcnow(),
         }
         result = notes_collection.insert_one(new_note)
         new_note["_id"] = str(result.inserted_id)
@@ -83,9 +97,10 @@ def add_note():
         return jsonify(new_note), 201
     except Exception as e:
         return jsonify({"message": "Failed to add note", "error": str(e)}), 500
-    
-@app.route('/deleteNote/<note_id>', methods=['DELETE'])
-@cross_origin(origin='*')
+
+
+@app.route("/deleteNote/<note_id>", methods=["DELETE"])
+@cross_origin(origin="*")
 def delete_note(note_id):
     # if not is_valid_objectid(note_id):
     #     return jsonify({"message": "Invalid note ID"}), 400
@@ -97,6 +112,7 @@ def delete_note(note_id):
         return jsonify({"message": "Note deleted successfully"}), 200
     except Exception as e:
         return jsonify({"message": "Failed to delete note", "error": str(e)}), 500
+
 
 @app.route("/image/oppai", methods=["GET"])
 def oppai():
@@ -212,12 +228,36 @@ def gif():
     else:
         return jsonify({"API", "Responded with error"})
 
+
+@app.route("/image/realgif", methods=["GET"])
+def realgif():
+    # Generate a random number between 1 and 85 to pick a gif
+    number = generate_random_number(1, 85)
+    # Construct the URL of the GIF using the random number
+    gif_url = (
+        f"https://russmus.net/wp-content/uploads/2024/02/big-tits-gifs-{number}.gif"
+    )
+
+    # Fetch the GIF directly
+    gif_data = requests.get(gif_url)
+
+    # Check if the request was successful
+    if gif_data.status_code == 200:
+        return Response(
+            gif_data.content,
+            mimetype="image/gif",
+        )
+    else:
+        return jsonify({"message": "Failed to fetch the GIF."}), 404
+
+
 @app.errorhandler(HTTPException)
 def handle_exception(e):
     response = e.get_response()
     response.data = jsonify({"message": str(e), "error": str(e.description)}).data
     response.content_type = "application/json"
     return response
+
 
 if __name__ == "__main__":
     print(f"{pyfiglet.figlet_format('Sussy API')}")
