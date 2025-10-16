@@ -241,14 +241,20 @@ def realgif():
     # Fetch the GIF directly
     gif_data = requests.get(gif_url)
 
-    # Check if the request was successful
+# Log the status code and response content for debugging
+    print(f"Requested GIF URL: {gif_url}")
+    print(f"Response Status Code: {gif_data.status_code}")
+    if gif_data.status_code != 200:
+        print(f"Error fetching GIF: {gif_data.text}")
+
+# Check if the request was successful
     if gif_data.status_code == 200:
         return Response(
             gif_data.content,
             mimetype="image/gif",
         )
-    else:
-        return jsonify({"message": "Failed to fetch the GIF."}), 404
+else:
+    return jsonify({"message": "Failed to fetch the GIF."}), 404
 
 
 @app.errorhandler(HTTPException)
@@ -263,3 +269,4 @@ if __name__ == "__main__":
     print(f"{pyfiglet.figlet_format('Sussy API')}")
     app.run(host="0.0.0.0", port=8000)  # FOR PRODUCTION
     # app.run()
+
