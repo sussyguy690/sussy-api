@@ -253,8 +253,8 @@ def realgif():
             gif_data.content,
             mimetype="image/gif",
         )
-else:
-    return jsonify({"message": "Failed to fetch the GIF."}), 404
+    else:
+        return jsonify({"message": "Failed to fetch the GIF."}), 404
 
 
 @app.errorhandler(HTTPException)
@@ -269,4 +269,5 @@ if __name__ == "__main__":
     print(f"{pyfiglet.figlet_format('Sussy API')}")
     app.run(host="0.0.0.0", port=8000)  # FOR PRODUCTION
     # app.run()
+
 
